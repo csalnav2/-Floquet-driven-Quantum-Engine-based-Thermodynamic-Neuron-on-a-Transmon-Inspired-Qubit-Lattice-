@@ -1,39 +1,65 @@
-# Floquet-based-transmon-like-lattice-based-Thermodynamic-neuron
-This interactive model simulates a four‑qubit, transmon‑like lattice under thermally pulsed, Floquet driving (two‑level approximation). It functions as a Boolean linear classifier, passing NOT/NOR and three‑input majority tests, and provides live diagnostics with optional daemon‑driven control.
- This system is modeled as a simulation of a 4‑qubit, transmon‑inspired lattice model in the two‑level (qubit) approximation, evolving a full 16×16 global density matrix (so the system can genuinely entangle, not just “fake it” with independent single‑qubit states). The dynamics are open‑system and time‑dependent: each qubit is subjected to a periodic, pulsed square‑wave bath schedule (default period ≈ 4 seconds), which modulates the effective bath temperature and dissipation parameters. Because the drive/noise environment is periodic in time, the engine exhibits Floquet‑like stroboscopic behavior (i.e., the one‑period map can generate repeating structures and “quasi‑modes” in observables), and those periodic structures can show up as constructive/destructive patterns across multiple diagnostics.
+# Floquet-based Transmon-like Lattice: Thermodynamic Neuron
 
-The lattice itself includes two interaction channels:
+This interactive model simulates a four-qubit, **transmon-like lattice** under thermally pulsed, **Floquet driving** (two-level approximation). It functions as a **Boolean linear classifier**, passing NOT/NOR and three-input majority tests, and provides live diagnostics with optional daemon-driven control.
 
-J_cap (exchange‑like coupling ∼ XX + YY)
+## 🌀 Dynamical Core
+The system evolves a full $16 \times 16$ global density matrix $\rho(t)$, allowing for genuine multi-qubit entanglement. The dynamics are open-system and time-dependent: each qubit is subjected to a periodic, pulsed square-wave bath schedule (default period $\approx 4s$), modulating effective bath temperature and dissipation. 
 
-J_ind (Ising‑like coupling ∼ ZZ)
-These are applied at the global Hamiltonian level, so the evolution can generate multi‑qubit correlations and pairwise entanglement inside the same 16×16 state.
+As a **Floquet engine**, the system exhibits stroboscopic behavior where the one-period map generates repeating quasi-modes and constructive interference patterns across multiple diagnostics.
 
-To quantify and track what the system is doing, the dashboard monitors several families of signals:
+### Lattice Interactions:
+* **$J_{\text{cap}}$:** Exchange-like coupling ($\sim XX + YY$).
+* **$J_{\text{ind}}$:** Ising-like coupling ($\sim ZZ$).
 
-State distance / “thermodynamic length” style diagnostics:
-We track Bures‑geometry quantities in two ways:
+---
 
-a per‑qubit “TL” style trace based on Bures angle to a reference reduced state (so it behaves like “how far did this qubit drift from the reference?”), and
+## 📊 Diagnostic Suite
 
-a global Bures‑speed style diagnostic (Bures distance step‑to‑step), plus a lagged Bures distance D_lag(t) to probe “how much the present differs from the past.”
+### 1. State Distance & Thermodynamic Length
+* **Bures Geometry:** We track the Bures angle to a reference reduced state to measure qubit drift.
+* **Memory Hotspots:** Using lagged Bures distance $D_{\text{lag}}(t)$, we define a **memory-loss current** $J_{\text{sep}} = \max(0, \frac{d}{dt} D_{\text{lag}})$. Spikes in $J_{\text{sep}}$ represent points where the system "separates from its own past," visualized as purple overlays on Bloch trajectories.
 
-Memory loss / hotspot logic (Bures‑lag separation current):
-Using the lagged Bures distance D_lag(t), we define a “memory‑loss current” J_sep = max(0, d/dt D_lag). When J_sep spikes, the system is “separating from its own past” faster than usual, and we visualize those events as hotspots (including purple overlays on Bloch trajectories).
+### 2. Information & Complexity
+* **OSEE (Operator-Space Entanglement Entropy):** Tracked across the $2|2$ cut as a proxy for operator complexity and scrambling behavior.
+* **QFI (Quantum Fisher Information):** Computed as a sensitivity measure on reduced states.
+* **Entanglement:** Monitored via pairwise **Log-Negativity** ($E_N$) and **Concurrence** for all 6 qubit pairs.
+* **Mutual Information:** Captures total (classical + quantum) correlations across the $(01)|(23)$ bipartition.
 
-Coherence / QFI / purity / echo / T1–T2:
-Coherence is tracked via |ρ01| on reduced qubits; QFI is computed as a sensitivity measure (generator‑based) on reduced states; purity is Tr(ρ²). The dashboard also tracks T1 (energy relaxation / spin‑lattice analogue) and T2 (dephasing / spin‑spin analogue) as instantaneous values derived from the local noise parameters. Echo is tracked via a fidelity‑like overlap with a reference reduced state.
+### 3. Geometric & Physical Probes
+* **Geometric Activity:** Proxies for Berry-rate, Quantum Geometric Tensor (QGT) metric, and path curvature computed from Bloch trajectories.
+* **Leakage Proxy:** A risk indicator $(\Omega/|\alpha|)^2$ monitors the drive-to-anharmonicity ratio, flagging potential leakage into non-computational states ($|2\rangle, |3\rangle$).
 
-Entanglement and correlations (computed from the global 16×16 state):
-Entanglement is diagnosed by taking partial traces down to two‑qubit 4×4 reduced states for all 6 qubit pairs, then computing pairwise log‑negativity (LN12, LN13, LN14, LN23, LN24, LN34). We also compute concurrence on those same reduced 4×4 pair states as a second entanglement monotone.
-For broader correlation structure, we additionally compute mutual information across the (01)|(23) bipartition, which captures total correlation (classical + quantum) between the two halves of the lattice.
+---
 
-Operator complexity / entanglement‑in‑operator‑space:
-We track OSEE (Operator‑Space Entanglement Entropy) across the 2|2 cut as a proxy for “operator complexity / scrambling‑ish behavior” in the density‑operator viewed as a bipartite object.
+## 🧠 Thermodynamic Neuron (Boolean Logic)
+The lattice serves as the dynamical substrate for a **Boolean linear separator** (perceptron-equivalent). It successfully implements:
+* **NOT / NOR** gates.
+* **3-Input Majority** tests.
+The lattice observables are mapped into a readout layer that demonstrates these gates passing their respective truth tables under the perceptron rule.
 
-Geometry probes (clearly labeled as proxies):
-We include Berry‑rate, QGT‑metric, and path curvature proxies computed from Bloch‑trajectory geometry (not the fully rigorous mixed‑state/Uhlmann geometry). These are used as “geometric activity indicators” rather than strict geometric invariants.
+---
 
-Finally, this engine is intended as the “Soma” (body) of a Thermodynamic Neuron: a Boolean linear separator layer (perceptron‑equivalent) that can implement NOT, NOR, and 3‑MAJORITY. The code includes logic self‑tests showing those gates pass their truth tables under the perceptron rule; the lattice engine is the dynamical substrate whose observables can be mapped into that readout layer.
+## 📚 References
 
-One more diagnostic worth mentioning: the transmon leakage proxy (Ω/|α|)² shown alongside entanglement traces is a risk indicator for leakage into |2⟩, |3⟩… in a real weakly anharmonic transmon. In this simulation the Hilbert space is still two‑level, so it’s not “measuring actual |2⟩ population”—it’s a “how hard are we driving relative to anharmonicity?” warning light.
+### Quantum Thermodynamics & Logic
+* **Thermodynamic Computing:** Lipka‑Bartosik et al., [Science Advances 10(36), 2024](https://doi.org/10.1126/sciadv.adm8792)
+* **Quantum Perceptrons:** Schuld et al., [Phys. Lett. A 378, 21 (2014)](https://doi.org/10.1016/j.physleta.2014.08.024)
+
+### Information Geometry & Bures Metric
+* **Bures Distance:** Uhlmann, [Rep. Math. Phys. 9, 273 (1976)](https://doi.org/10.1016/0034-4877(76)90060-4)
+* **Thermodynamic Length:** Crooks, [Phys. Rev. Lett. 99, 100602 (2007)](https://doi.org/10.1103/PhysRevLett.99.100602)
+* **Quantum Fisher Information:** Braunstein & Caves, [Phys. Rev. Lett. 72, 3439 (1994)](https://doi.org/10.1103/PhysRevLett.72.3439)
+
+### Complexity & Entanglement
+* **OSEE:** Prosen & Pižorn, [Phys. Rev. A 76, 032316 (2007)](https://doi.org/10.1103/PhysRevA.76.032316)
+* **Log-Negativity:** Vidal & Werner, [Phys. Rev. A 65, 032314 (2002)](https://doi.org/10.1103/PhysRevA.65.032314)
+* **Mutual Information in Lattices:** Wolf et al., [Phys. Rev. Lett. 100, 070502 (2008)](https://doi.org/10.1103/PhysRevLett.100.070502)
+
+### Transmon & Floquet Physics
+* **Transmon Theory:** Koch et al., [Phys. Rev. A 76, 042319 (2007)](https://doi.org/10.1103/PhysRevA.76.042319)
+* **Floquet Dynamics:** Shirley, [Phys. Rev. 138, B979 (1965)](https://doi.org/10.1103/PhysRev.138.B979)
+* **Quantum Geometric Tensor:** Provost & Vallee, [Commun. Math. Phys. 76, 289 (1980)](https://doi.org/10.1007/BF01197703)
+
+---
+
+> **Note:** This simulation utilizes the two-level approximation. The leakage proxy is a diagnostic tool for experimental feasibility and does not simulate a multi-level Hilbert space.
