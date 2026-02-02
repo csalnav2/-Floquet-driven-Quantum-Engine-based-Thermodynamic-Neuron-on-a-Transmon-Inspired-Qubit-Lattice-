@@ -22,7 +22,7 @@ As a **Floquet engine**, the system exhibits stroboscopic behavior where the one
 ### 2. Information & Complexity
 * **OSEE (Operator-Space Entanglement Entropy):** Tracked across the $2|2$ cut as a proxy for operator complexity and scrambling behavior.
 * **QFI (Quantum Fisher Information):** Computed as a sensitivity measure on reduced states.
-* **Entanglement:** Monitored via pairwise **Log-Negativity** ($E_N$) and **Concurrence** for all 6 qubit pairs.
+* **Entanglement:** Monitored via pairwise **Log-Negativity** ($E_N$) and **Concurrence** for  qubit pairs.
 * **Mutual Information:** Captures total (classical + quantum) correlations across the $(01)|(23)$ bipartition.
 
 ### 3. Geometric & Physical Probes
